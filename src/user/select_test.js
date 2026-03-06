@@ -101,36 +101,55 @@ function renderEmpty() {
 async function renderTestCards(tests) {
     container.innerHTML = "";
 
-    // 1. Fetch total images count per tour involved in tests
+    // 1. Fetch total lines count per tour
     const tourIds = [...new Set(tests.map(t => t.tour_id))];
-    const { data: tourCounts } = await supabase
+    const { data: lineCounts } = await supabase
+        .from('image_contents')
+        .select('image_id, image_id(tour_id)')
+        .filter('image_id.tour_id', 'in', `(${tourIds.join(',')})`);
+
+    // Note: Since multi-table join filters can be tricky, let's get all images in these tours first
+    const { data: tourImages } = await supabase
         .from('images')
-        .select('tour_id, id')
+        .select('id, tour_id')
         .in('tour_id', tourIds);
 
-    const tourTotalMap = {};
-    tourCounts?.forEach(img => {
-        tourTotalMap[img.tour_id] = (tourTotalMap[img.tour_id] || 0) + 1;
+    const tourImageIdsMap = {};
+    const tourTotalLinesMap = {};
+    tourImages?.forEach(img => {
+        if (!tourImageIdsMap[img.tour_id]) tourImageIdsMap[img.tour_id] = [];
+        tourImageIdsMap[img.tour_id].push(img.id);
     });
 
-    // 2. Fetch completed images count per test
-    const testIds = tests.map(t => t.id);
-    const { data: progressData } = await supabase
-        .from('user_progress')
-        .select('test_id')
-        .in('test_id', testIds)
-        .eq('is_completed', true);
+    const allImgIds = tourImages?.map(i => i.id) || [];
+    const { data: allContents } = await supabase
+        .from('image_contents')
+        .select('image_id')
+        .in('image_id', allImgIds);
 
-    const testCompletedMap = {};
-    progressData?.forEach(row => {
-        testCompletedMap[row.test_id] = (testCompletedMap[row.test_id] || 0) + 1;
+    allContents?.forEach(c => {
+        // Find which tour this image belongs to
+        const tourId = tourImages.find(img => img.id === c.image_id)?.tour_id;
+        if (tourId) tourTotalLinesMap[tourId] = (tourTotalLinesMap[tourId] || 0) + 1;
+    });
+
+    // 2. Fetch completed lines count per test
+    const testIds = tests.map(t => t.id);
+    const { data: lineEvals } = await supabase
+        .from('line_evaluations')
+        .select('test_id')
+        .in('test_id', testIds);
+
+    const testCompletedLinesMap = {};
+    lineEvals?.forEach(row => {
+        testCompletedLinesMap[row.test_id] = (testCompletedLinesMap[row.test_id] || 0) + 1;
     });
 
     tests.forEach((test, index) => {
-        const total = tourTotalMap[test.tour_id] || 0;
-        const completed = testCompletedMap[test.id] || 0;
-        const progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
-        const isCompleted = !!test.completed_at || progressPercent === 100;
+        const totalLines = tourTotalLinesMap[test.tour_id] || 0;
+        const compLines = testCompletedLinesMap[test.id] || 0;
+        const progressPercent = totalLines > 0 ? Math.round((compLines / totalLines) * 100) : 0;
+        const isCompleted = !!test.completed_at || (totalLines > 0 && compLines >= totalLines);
 
         // Calculate D-Day
         let dDayText = "";
@@ -175,7 +194,7 @@ async function renderTestCards(tests) {
             <div class="mini-progress-container">
                 <div class="mini-progress-info">
                     <span>${progressPercent}% Complete</span>
-                    <span>${completed} / ${total} Images</span>
+                    <span>${compLines} / ${totalLines} Lines</span>
                 </div>
                 <div class="mini-progress-bar-bg">
                     <div class="mini-progress-bar-fill" style="width: ${progressPercent}%"></div>
@@ -202,7 +221,6 @@ async function renderTestCards(tests) {
         container.appendChild(card);
     });
 }
-
 // --- Data Fetching ---
 async function fetchTests(userCode) {
     renderSkeleton(); // Show Skeleton UI
