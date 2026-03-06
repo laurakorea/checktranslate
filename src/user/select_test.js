@@ -98,36 +98,96 @@ function renderEmpty() {
     `;
 }
 
-function renderTestCards(tests) {
+async function renderTestCards(tests) {
     container.innerHTML = "";
 
+    // 1. Fetch total images count per tour involved in tests
+    const tourIds = [...new Set(tests.map(t => t.tour_id))];
+    const { data: tourCounts } = await supabase
+        .from('images')
+        .select('tour_id, id')
+        .in('tour_id', tourIds);
+
+    const tourTotalMap = {};
+    tourCounts?.forEach(img => {
+        tourTotalMap[img.tour_id] = (tourTotalMap[img.tour_id] || 0) + 1;
+    });
+
+    // 2. Fetch completed images count per test
+    const testIds = tests.map(t => t.id);
+    const { data: progressData } = await supabase
+        .from('user_progress')
+        .select('test_id')
+        .in('test_id', testIds)
+        .eq('is_completed', true);
+
+    const testCompletedMap = {};
+    progressData?.forEach(row => {
+        testCompletedMap[row.test_id] = (testCompletedMap[row.test_id] || 0) + 1;
+    });
+
     tests.forEach((test, index) => {
-        const isCompleted = !!test.completed_at;
+        const total = tourTotalMap[test.tour_id] || 0;
+        const completed = testCompletedMap[test.id] || 0;
+        const progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
+        const isCompleted = !!test.completed_at || progressPercent === 100;
+
+        // Calculate D-Day
+        let dDayText = "";
+        let isUrgent = false;
+        if (test.due_date) {
+            const now = new Date();
+            const due = new Date(test.due_date);
+            const diffMs = due - now;
+            const diffHours = diffMs / (1000 * 60 * 60);
+
+            if (diffMs <= 0) {
+                dDayText = "Overdue";
+                isUrgent = true;
+            } else if (diffHours < 24) {
+                const h = Math.floor(diffHours);
+                dDayText = `${h}h left`;
+                isUrgent = true;
+            } else {
+                const d = Math.ceil(diffHours / 24);
+                dDayText = `D-${d}`;
+                if (d <= 2) isUrgent = true;
+            }
+        }
+
         const card = document.createElement("div");
         card.className = `test-card fade-in ${isCompleted ? 'completed' : ''}`;
-
-        // Stagger the fade-in animation
         card.style.animationDelay = `${index * 0.05}s`;
 
-        const info = document.createElement("div");
-        info.className = "test-info";
-        info.innerHTML = `
-            <span class="tour-title">Tour ID: ${test.tour_id}</span>
-            <span class="tour-lang">Language: ${test.language}</span>
+        card.innerHTML = `
+            <div class="test-card-top">
+                <div class="test-info">
+                    <span class="tour-title">Tour ID: ${test.tour_id}</span>
+                    <span class="tour-lang">${test.language.toUpperCase()}</span>
+                </div>
+                <div class="card-actions">
+                    ${dDayText ? `<span class="dday-badge ${isUrgent ? 'urgent' : ''}">${dDayText}</span>` : ''}
+                    ${isCompleted ? '<span class="material-icons check-icon">check_circle</span>' :
+                `<span class="status-badge progress">In Progress</span>`}
+                </div>
+            </div>
+            
+            <div class="mini-progress-container">
+                <div class="mini-progress-info">
+                    <span>${progressPercent}% Complete</span>
+                    <span>${completed} / ${total} Images</span>
+                </div>
+                <div class="mini-progress-bar-bg">
+                    <div class="mini-progress-bar-fill" style="width: ${progressPercent}%"></div>
+                </div>
+            </div>
         `;
-
-        const badge = document.createElement("span");
-        badge.className = `status-badge ${isCompleted ? 'done' : 'progress'}`;
-        badge.textContent = isCompleted ? 'Completed' : 'In Progress';
-
-        card.appendChild(info);
-        card.appendChild(badge);
 
         card.addEventListener("click", () => {
             if (isCompleted) {
                 showAppleModal(
-                    "Read-Only View",
-                    "This test is completely finished and submitted. You can view it, but cannot make changes.",
+                    "Review Completed",
+                    "This test is finished. You can view your results, but editing is disabled.",
                     () => {
                         setTestSession(test, true);
                         window.location.href = "./work.html";
