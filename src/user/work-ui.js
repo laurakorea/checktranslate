@@ -100,7 +100,7 @@ export function updateCountdown(dueDate) {
     const diffMs = due - now;
 
     if (diffMs <= 0) {
-        el.textContent = "Overdue";
+        el.innerHTML = "<strong>Overdue</strong>";
         el.className = "countdown-badge urgent";
         return;
     }
@@ -110,8 +110,8 @@ export function updateCountdown(dueDate) {
     if (diffHours >= 48) {
         // D-Day format
         const dDay = Math.ceil(diffHours / 24);
-        const dateStr = due.toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' });
-        el.textContent = `D-${dDay} (${dateStr})`;
+        const dateStr = due.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
+        el.innerHTML = `<strong>D-${dDay}</strong> <small>(${dateStr}까지)</small>`;
         el.className = "countdown-badge";
     } else {
         // Countdown format HH:MM:SS
@@ -120,7 +120,9 @@ export function updateCountdown(dueDate) {
         const s = Math.floor((diffMs % (1000 * 60)) / 1000);
 
         const pad = (n) => n.toString().padStart(2, '0');
-        el.textContent = `${pad(h)}:${pad(m)}:${pad(s)} 남음`;
+        const timeLeft = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+        el.innerHTML = `<strong>URGENT</strong> <small>${timeLeft} 남음</small>`;
 
         // Add urgent class for animations if < 48h
         el.className = "countdown-badge urgent";
