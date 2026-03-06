@@ -1,5 +1,20 @@
 /* work.css - Styles specific to translation work review page */
 
+.image-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
 .image-container {
     width: 100%;
     max-width: 600px;
@@ -9,6 +24,8 @@
     background: #111;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     position: relative;
+    margin-bottom: 0;
+    /* Let translation-card handle spacing or adjust as needed */
 }
 
 .image-container img {

@@ -152,7 +152,7 @@ async function handleReviewAction(status, issueCategory = null, issueDetail = nu
 document.addEventListener('DOMContentLoaded', () => {
   // Guards
   if (!state.userCode || !state.tourId) {
-    window.location.href = 'select_test.html';
+    window.location.href = './select_test.html';
     return;
   }
 
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnBack = document.getElementById('btnBack');
   if (btnBack) {
     btnBack.addEventListener('click', () => {
-      window.location.href = 'select_test.html';
+      window.location.href = './select_test.html';
     });
   }
 

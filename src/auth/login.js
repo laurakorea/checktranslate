@@ -88,9 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Redirect based on role
         setTimeout(() => {
             if (userRole === 'admin') {
-                window.location.href = "../admin/dashboard.html";
+                window.location.href = "./../admin/dashboard.html";
             } else {
-                window.location.href = "../user/select_test.html";
+                window.location.href = "./../user/select_test.html";
             }
         }, 1200);
     });

@@ -130,12 +130,12 @@ function renderTestCards(tests) {
                     "This test is completely finished and submitted. You can view it, but cannot make changes.",
                     () => {
                         setTestSession(test, true);
-                        window.location.href = "work.html";
+                        window.location.href = "./work.html";
                     }
                 );
             } else {
                 setTestSession(test, false);
-                window.location.href = "work.html";
+                window.location.href = "./work.html";
             }
         });
 
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const userCode = localStorage.getItem("USER_CODE");
 
     if (!userCode) {
-        window.location.href = "../auth/login.html";
+        window.location.href = "./../auth/login.html";
         return;
     }
 
@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnLogout) {
         btnLogout.addEventListener("click", () => {
             localStorage.clear();
-            window.location.href = "../auth/login.html";
+            window.location.href = "./../auth/login.html";
         });
     }
 

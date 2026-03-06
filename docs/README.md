@@ -62,5 +62,17 @@ checktranslate/
 - **스타일 수정**: `src/styles/styles.css`에서 `--lens-size`, `--zoom-level` 등 CSS 변수를 통해 UI를 커스터마이징할 수 있습니다.
 - **테스트**: `npm test`를 통해 핵심 로직의 무결성을 확인합니다.
 
+## Vercel Deployment Guide
+
+1. **Project Import**: Import your repository to [Vercel](https://vercel.com).
+2. **Environment Variables**: Go to Project Settings -> Environment Variables and add the following keys:
+   - `VITE_SUPABASE_URL`: Your Supabase URL.
+   - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key.
+   - *Note*: Ensure the keys match exactly as they appear in your `.env` file (prefixed with `VITE_` for Vite support).
+3. **Build Configuration**:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+4. **404 Handling**: The `vercel.json` file in the root directory ensures all routes fallback to `index.html` for smooth navigation.
+
 ---
 *Last Updated: 2026-03-06*
