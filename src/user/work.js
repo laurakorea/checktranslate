@@ -16,7 +16,9 @@ const state = {
   assignedLang: localStorage.getItem('ASSIGNED_LANG'),
   testId: localStorage.getItem('CURRENT_TEST_ID'),
   tourId: localStorage.getItem('CURRENT_TOUR_ID'),
-  currentImageId: null
+  currentImageId: null,
+  dueDate: null,
+  timerId: null
 };
 
 window.onerror = function (message, source, lineno, colno, error) {
@@ -34,8 +36,17 @@ async function initializeTour() {
     state.allTourImages = result.tourImages;
     state.totalTourLines = result.totalTourLines;
     state.evaluatedLinesCount = result.evaluatedLinesCount;
+    state.dueDate = result.dueDate;
 
     ui.updateHeaderProgress(state.evaluatedLinesCount, state.totalTourLines);
+
+    // Initial countdown update
+    if (state.dueDate) {
+      ui.updateCountdown(state.dueDate);
+      state.timerId = setInterval(() => {
+        ui.updateCountdown(state.dueDate);
+      }, 1000);
+    }
 
     const imageIds = state.allTourImages.map(img => img.id);
     const resumeImgId = await api.fetchRecentEvaluatedImageId(state.userCode, imageIds);
@@ -89,6 +100,7 @@ async function loadNextImage(imgIndex) {
 
 async function handleTourCompletion() {
   ui.renderEndOfWork();
+  if (state.timerId) clearInterval(state.timerId);
 
   if (!state.isReadOnly && state.testId) {
     await api.markTestCompleted(state.testId);

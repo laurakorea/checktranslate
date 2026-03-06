@@ -19,7 +19,10 @@
                 Back</button>
         </div>
         <div class="header-right">
-            <span class="progress-text" id="headerProgressText">0/0</span>
+            <div class="header-meta">
+                <span id="countdownText" class="countdown-badge"></span>
+                <span class="progress-text" id="headerProgressText">0/0</span>
+            </div>
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="headerProgressBar"></div>
             </div>
@@ -30,7 +33,8 @@
     <main class="main">
         <h2 id="headerImageTitle" class="image-title">Loading...</h2>
         <div class="image-container" id="imageWrapper">
-            <img src="" alt="Review Image" id="mainImage" />
+            <div id="imageSkeleton" class="skeleton-ui"></div>
+            <img src="" alt="Review Image" id="mainImage" style="opacity:0; transition: opacity 0.5s ease;" />
         </div>
 
         <div class="translation-card" id="translationCard">

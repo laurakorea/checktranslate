@@ -4,6 +4,14 @@ export async function fetchTourProgress(tourId, userCode) {
     let totalTourLines = 0;
     let evaluatedLinesCount = 0;
 
+    const { data: tourData, error: tourErr } = await supabase
+        .from('tests')
+        .select('due_date')
+        .eq('id', localStorage.getItem('CURRENT_TEST_ID'))
+        .maybeSingle();
+
+    const dueDate = tourData?.due_date || null;
+
     const { data: tourImages, error: imgError } = await supabase
         .from('images')
         .select('id, image_url, image_title')
@@ -31,7 +39,7 @@ export async function fetchTourProgress(tourId, userCode) {
 
     if (!evalErr) evaluatedLinesCount = evalCount || 0;
 
-    return { tourImages, totalTourLines, evaluatedLinesCount };
+    return { tourImages, totalTourLines, evaluatedLinesCount, dueDate };
 }
 
 export async function fetchImageLines(imageId, assignedLang) {

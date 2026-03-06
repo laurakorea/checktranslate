@@ -78,12 +78,52 @@ export function updateImageInfo(imageObj) {
     }
 
     const mainImg = document.getElementById('mainImage');
+    const skeleton = document.getElementById('imageSkeleton');
     if (mainImg) {
-        mainImg.classList.add('fade-out');
-        setTimeout(() => {
-            mainImg.src = imageObj.image_url;
-            mainImg.onload = () => mainImg.classList.remove('fade-out');
-        }, 300);
+        mainImg.style.opacity = '0';
+        if (skeleton) skeleton.style.display = 'block';
+
+        mainImg.src = imageObj.image_url;
+        mainImg.onload = () => {
+            if (skeleton) skeleton.style.display = 'none';
+            mainImg.style.opacity = '1';
+        };
+    }
+}
+
+export function updateCountdown(dueDate) {
+    const el = document.getElementById('countdownText');
+    if (!el || !dueDate) return;
+
+    const now = new Date();
+    const due = new Date(dueDate);
+    const diffMs = due - now;
+
+    if (diffMs <= 0) {
+        el.textContent = "Overdue";
+        el.className = "countdown-badge urgent";
+        return;
+    }
+
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    if (diffHours >= 48) {
+        // D-Day format
+        const dDay = Math.ceil(diffHours / 24);
+        const dateStr = due.toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' });
+        el.textContent = `D-${dDay} (${dateStr})`;
+        el.className = "countdown-badge";
+    } else {
+        // Countdown format HH:MM:SS
+        const h = Math.floor(diffMs / (1000 * 60 * 60));
+        const m = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        const pad = (n) => n.toString().padStart(2, '0');
+        el.textContent = `${pad(h)}:${pad(m)}:${pad(s)} 남음`;
+
+        // Add urgent class for animations if < 48h
+        el.className = "countdown-badge urgent";
     }
 }
 
