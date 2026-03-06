@@ -46,20 +46,26 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Query Supabase for the user record (assume role may not exist yet, fallback to 'user')
+        // Query Supabase for the user record
         const { data, error } = await supabase
             .from("users")
-            // Attempt to select role if it exists, but might fail if column not added yet,
-            // so we handle it gracefully by just requesting it.
-            // But wait, if column doesn't exist, it errors out entirely.
-            // Let's just fetch existing columns, and resolve role by userCode for now.
-            .select("assigned_lang, completed_images, daily_goal")
+            .select("*")
             .eq("user_code", userCode)
-            .single();
+            .maybeSingle(); // maybeSingle is safer than single() for non-existent records
 
-        if (error || !data) {
-            console.error("Login error:", error);
-            showError("User Code not found or an error occurred.");
+        if (error) {
+            console.error("Supabase Login Error Details:", {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            });
+            showError(`Login error: ${error.message}`);
+            return;
+        }
+
+        if (!data) {
+            showError("User Code not found. Please check and try again.");
             return;
         }
 

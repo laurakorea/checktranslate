@@ -91,21 +91,57 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 16px 16px calc(var(--safe-area-bottom) + 16px);
+    padding: 16px 24px calc(var(--safe-area-bottom) + 24px);
+    /* Increased spacing */
     display: flex;
-    gap: 12px;
-    background: linear-gradient(to top, black 80%, transparent);
+    gap: 20px;
+    /* Wider gap to prevent misclicks */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 60%, transparent);
+    z-index: 100;
+}
+
+.btn {
+    flex: 1;
+    height: 72px;
+    /* Large, easy-to-click buttons */
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    background-color: #2C2C2E;
+    /* Unified dark grey background */
+    color: var(--text-white);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: scale(0.94);
+    opacity: 0.8;
 }
 
 .btn-issue {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: var(--text-white);
+    border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.btn-issue:hover {
+    background-color: #411010;
+    /* Soft red on hover */
+    border-color: #ff453a;
 }
 
 .btn-natural {
-    background: var(--text-white);
-    color: var(--bg-black);
+    border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
+.btn-natural:hover {
+    background-color: #0d2a14;
+    /* Soft green on hover */
+    border-color: #34c759;
 }
 
 /* --- Action Sheet (iOS Style) --- */
