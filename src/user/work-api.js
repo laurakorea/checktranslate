@@ -118,23 +118,46 @@ export async function fetchRecentEvaluatedImageId(userCode, imageIds) {
 }
 
 export async function saveImageProgress(userCode, testId, imageId) {
-    if (!userCode || !testId || !imageId) return;
-    // Note: Upsert ensures we don't duplicate records for the same user/test/image
-    await supabase.from('user_progress').upsert({
+    if (!userCode || !testId || !imageId) {
+        console.error("❌ saveImageProgress missing params:", { userCode, testId, imageId });
+        return;
+    }
+
+    console.log(`⏳ Saving progress: User=${userCode}, Test=${testId}, Image=${imageId}`);
+
+    const { error } = await supabase.from('user_progress').upsert({
         user_code: userCode,
         test_id: testId,
         image_id: imageId,
         is_completed: true,
         completed_at: new Date().toISOString()
     }, { onConflict: 'user_code,test_id,image_id' });
+
+    if (error) {
+        console.error("❌ Supabase Error (user_progress):", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+        });
+    } else {
+        console.log("✅ user_progress updated successfully!");
+    }
 }
 
 export async function fetchCompletedImageIds(userCode, testId) {
-    const { data } = await supabase
+    if (!userCode || !testId) return [];
+
+    const { data, error } = await supabase
         .from('user_progress')
         .select('image_id')
         .eq('user_code', userCode)
         .eq('test_id', testId)
         .eq('is_completed', true);
+
+    if (error) {
+        console.error("❌ Error fetching completed images:", error);
+        return [];
+    }
     return (data || []).map(row => row.image_id);
 }
