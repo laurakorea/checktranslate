@@ -35,7 +35,16 @@ function showSuccess(message) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
-    if (!form) return;
+    const userCodeInput = document.getElementById("userCode");
+    if (!form || !userCodeInput) return;
+
+    // Explicitly handle Enter key for mobile virtual keyboards
+    userCodeInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            form.requestSubmit();
+        }
+    });
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
