@@ -67,7 +67,18 @@ CREATE TABLE IF NOT EXISTS public.review_sessions (
     CONSTRAINT uq_user_image_session UNIQUE (user_code, image_id)
 );
 
--- 7. 인덱스 설정 (조회 속도 최적화)
+-- 7. user_progress 테이블 (이미지별 완료 상태 - 캐시)
+CREATE TABLE IF NOT EXISTS public.user_progress (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_code     TEXT NOT NULL REFERENCES public.users(user_code) ON DELETE CASCADE,
+    test_id       UUID REFERENCES public.tests(id) ON DELETE CASCADE,
+    image_id      INT NOT NULL REFERENCES public.images(id) ON DELETE CASCADE,
+    is_completed  BOOLEAN DEFAULT FALSE,
+    completed_at  TIMESTAMPTZ,
+    CONSTRAINT uq_user_test_image UNIQUE (user_code, test_id, image_id)
+);
+
+-- 8. 인덱스 설정 (조회 속도 최적화)
 CREATE INDEX IF NOT EXISTS idx_tests_user ON public.tests(user_code);
 CREATE INDEX IF NOT EXISTS idx_images_tour ON public.images(tour_id);
 CREATE INDEX IF NOT EXISTS idx_image_contents_image ON public.image_contents(image_id);

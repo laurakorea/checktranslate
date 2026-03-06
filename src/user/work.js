@@ -48,13 +48,17 @@ async function initializeTour() {
       }, 1000);
     }
 
-    const imageIds = state.allTourImages.map(img => img.id);
-    const resumeImgId = await api.fetchRecentEvaluatedImageId(state.userCode, imageIds);
+    const completedIds = await api.fetchCompletedImageIds(state.userCode, state.testId);
 
     let startImgIdx = 0;
-    if (resumeImgId) {
-      const idx = state.allTourImages.findIndex(img => img.id === resumeImgId);
-      if (idx !== -1) startImgIdx = idx;
+    // Find the first image index that hasn't been completed yet
+    const nextUnfinishedIdx = state.allTourImages.findIndex(img => !completedIds.includes(img.id));
+
+    if (nextUnfinishedIdx !== -1) {
+      startImgIdx = nextUnfinishedIdx;
+    } else if (completedIds.length >= state.allTourImages.length) {
+      // All images are completed
+      startImgIdx = state.allTourImages.length;
     }
 
     loadNextImage(startImgIdx);
@@ -142,6 +146,12 @@ async function handleReviewAction(status, issueCategory = null, issueDetail = nu
         ui.setUILoading(false, state.isReadOnly);
       } else {
         ui.resetCardAnimation();
+
+        // Save image-level completion as the user has finished all lines in this image
+        if (!state.isReadOnly) {
+          await api.saveImageProgress(state.userCode, state.testId, state.currentImageId);
+        }
+
         await loadNextImage(state.currentImageIndex + 1);
 
         state.isPending = false;

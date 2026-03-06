@@ -116,3 +116,25 @@ export async function fetchRecentEvaluatedImageId(userCode, imageIds) {
     }
     return null;
 }
+
+export async function saveImageProgress(userCode, testId, imageId) {
+    if (!userCode || !testId || !imageId) return;
+    // Note: Upsert ensures we don't duplicate records for the same user/test/image
+    await supabase.from('user_progress').upsert({
+        user_code: userCode,
+        test_id: testId,
+        image_id: imageId,
+        is_completed: true,
+        completed_at: new Date().toISOString()
+    }, { onConflict: 'user_code,test_id,image_id' });
+}
+
+export async function fetchCompletedImageIds(userCode, testId) {
+    const { data } = await supabase
+        .from('user_progress')
+        .select('image_id')
+        .eq('user_code', userCode)
+        .eq('test_id', testId)
+        .eq('is_completed', true);
+    return (data || []).map(row => row.image_id);
+}
