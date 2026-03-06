@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Antigravity 실시간 대시보드</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="admin.css" />
+</head>
+
+<body>
+    <header class="header">
+        <h1>실시간 모니터링</h1>
+    </header>
+    <main class="main">
+        <section class="stats">
+            <div class="card">
+                <h2>현재 작업 중인 사용자</h2>
+                <ul id="activeUsersList">
+                    <!-- Filled by JS -->
+                </ul>
+            </div>
+            <div class="card">
+                <h2>평균 이미지 검수 시간 (초)</h2>
+                <p id="avgTime">-</p>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <p>© 2026 Antigravity 프로젝트</p>
+    </footer>
+    <script src="dashboard.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TourLive - Translation Review</title>
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link rel="stylesheet" href="work.css">
+</head>
+
+<body>
+
+    <!-- iOS Style Header -->
+    <header class="header">
+        <div class="header-left">
+            <button id="btnBack"
+                style="background:none; border:none; font-size:1rem; cursor:pointer; color:#007aff; margin-right:10px;">◀
+                Back</button>
+            <span id="headerImageTitle" style="font-size: 1.2rem; font-weight: 700;">Loading...</span>
+        </div>
+        <div class="header-right">
+            <span class="progress-text" id="headerProgressText">0/0</span>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="headerProgressBar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Review Area -->
+    <main class="main">
+        <div class="image-container" id="imageWrapper">
+            <img src="" alt="Review Image" id="mainImage" />
+        </div>
+
+        <div class="translation-card" id="translationCard">
+            <!-- Line-level Progress -->
+            <div class="sub-progress-container">
+                <span class="sub-progress-text" id="subProgressText">Line: 0 / 0</span>
+                <div class="sub-progress-bar-bg">
+                    <div class="sub-progress-bar-fill" id="subProgressBar"></div>
+                </div>
+            </div>
+
+            <div class="translation-text" id="translationText">Loading translation...</div>
+        </div>
+    </main>
+
+    <!-- Footer Action Buttons -->
+    <footer class="footer">
+        <button class="btn btn-issue" id="btnIssue">BAD❌</button>
+        <button class="btn btn-natural" id="btnNatural">GOOD✅</button>
+    </footer>
+
+    <!-- Action Sheet (Issue Selection) -->
+    <div class="overlay" id="overlay"></div>
+    <div class="action-sheet" id="actionSheet">
+        <div class="action-sheet-header">
+            <span class="action-sheet-title">Please select the reason for the issue</span>
+        </div>
+        <div class="action-list">
+            <button class="action-btn" data-category="mistranslation">Mistranslation</button>
+            <button class="action-btn" data-category="awkward-tone">Awkward Tone</button>
+            <button class="action-btn" data-category="grammar">Grammar/Typo</button>
+            <div class="action-btn others" id="btnOthers">
+                <span>Others (Direct Input)</span>
+                <textarea class="issue-input" id="issueInput" placeholder="Enter reason (Optional)"></textarea>
+                <button class="action-btn submit-others" id="btnSubmitOthers">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="work.js" type="module"></script>
+</body>
+
+</html>

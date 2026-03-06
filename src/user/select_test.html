@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Select Test Sheet - LQA</title>
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="select_test.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <span class="material-icons"
+                style="font-size: 18px; margin-right: 4px; vertical-align: middle;">assignment</span>
+            <span id="headerUserId">User</span>
+        </div>
+        <div class="header-center">Your Tests</div>
+        <div class="header-right" style="width: auto;">
+            <button id="btnLogout"
+                style="background: none; border: none; font-size: 14px; font-weight: 500; cursor: pointer; color: #ff3b30;">Logout</button>
+        </div>
+    </header>
+
+    <main class="test-list" id="testListContainer" style="overflow-y: auto;">
+        <!-- Test Cards injected here via JS -->
+    </main>
+
+    <script type="module" src="select_test.js"></script>
+</body>
+
+</html>

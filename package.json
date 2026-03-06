@@ -1,0 +1,26 @@
+{
+  "name": "antigravity-checktranslate",
+  "version": "1.0.0",
+  "description": "Antigravity image review web app",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint .",
+    "start": "npx -y serve ."
+  },
+  "keywords": [
+    "antigravity",
+    "image-review",
+    "supabase"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.57.0"
+  }
+}

@@ -1,0 +1,222 @@
+/* select_test.css - Styles specific to test selection page */
+
+.test-list {
+    padding: 20px;
+    padding-top: 80px;
+    /* Space for fixed header */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.test-card {
+    background: var(--card-bg, rgba(28, 28, 30, 0.8));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.test-card:active {
+    transform: scale(0.96);
+}
+
+.test-card.completed {
+    background: rgba(40, 40, 40, 0.5);
+    opacity: 0.6;
+    cursor: not-allowed;
+    border: 0.5px dashed rgba(255, 255, 255, 0.2);
+}
+
+.test-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tour-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-white, #ffffff);
+}
+
+.tour-lang {
+    font-size: 0.9rem;
+    color: var(--text-gray, #8e8e93);
+    text-transform: uppercase;
+}
+
+.status-badge {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: default;
+}
+
+.status-badge.progress {
+    background-color: transparent;
+    color: #8e8e93;
+    border: 1px solid rgba(142, 142, 147, 0.4);
+}
+
+.status-badge.done {
+    background-color: transparent;
+    color: rgba(142, 142, 147, 0.5);
+    border: 1px solid rgba(142, 142, 147, 0.2);
+}
+
+.header-center {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-white, #fff);
+    text-align: center;
+    flex: 1;
+}
+
+/* 1. Skeleton UI */
+.skeleton {
+    background: linear-gradient(-90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+    background-size: 400% 400%;
+    animation: shimmer 1.2s ease-in-out infinite;
+    border-radius: 8px;
+    min-height: 20px;
+}
+
+.skeleton-card {
+    background: var(--card-bg, rgba(28, 28, 30, 0.4));
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.5px solid rgba(255, 255, 255, 0.05);
+    min-height: 80px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: -135% 0%;
+    }
+}
+
+/* Fade-in Animation handled in styles.css */
+
+/* 2. Custom Modal UI */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.apple-modal {
+    background: rgba(28, 28, 30, 0.95);
+    border-radius: 14px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-overlay.active .apple-modal {
+    transform: scale(1);
+}
+
+.apple-modal-content {
+    padding: 24px 20px;
+    text-align: center;
+}
+
+.apple-modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.apple-modal-message {
+    font-size: 13px;
+    color: #8e8e93;
+    line-height: 1.4;
+}
+
+.apple-modal-actions {
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.apple-modal-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 14px;
+    font-size: 17px;
+    color: var(--sf-blue, #0A84FF);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.apple-modal-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.apple-modal-btn.cancel {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 400;
+}
+
+.apple-modal-btn.confirm {
+    font-weight: 600;
+}
+
+/* Error View */
+.error-view {
+    text-align: center;
+    padding: 40px 20px;
+    color: #ff453a;
+}
+
+.error-view .material-icons {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.8;
+}
+
+.error-view p {
+    font-size: 15px;
+    color: #8e8e93;
+    margin-top: 8px;
+}
